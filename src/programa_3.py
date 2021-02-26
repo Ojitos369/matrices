@@ -3,28 +3,15 @@ from src.extras import limpiar, pausar, convertir
 def proceso():
     limpiar()
     print("En proceso. Trabajando para su pronta implementacion")
-matrizA = [[1,1,1],[1,1,1],[1,1,1]]
-matrizB = [[1,1,1],[1,1,1],[1,1,1]]
-matrizC = [[1,1,1,1],[1,1,1,1],[1,1,1,1],[1,1,1,1]]
-matrizD = [[1,1,1,1],[1,1,1,1],[1,1,1,1],[1,1,1,1]]
-
-def eleccion():
-    incorrecto = True
-    while incorrecto:
-        limpiar()
-        opc = input("""1.- Matriz 3x3
-2.- Matriz 4x4
-Elige una opcion: """)
-        opc = convertir(opc)
-
-        if opc == 1 or opc == 2:
-            incorrecto = False
-            return opc
-        else:
-            print('Opcion no Valida intenta nuevamente')
-            pausar()
+mat_de_mat = [
+    [[1,1,1],[1,1,1],[1,1,1]],
+    [[1,1,1],[1,1,1],[1,1,1]],
+    [[1,1,1,1],[1,1,1,1],[1,1,1,1],[1,1,1,1]],
+    [[1,1,1,1],[1,1,1,1],[1,1,1,1],[1,1,1,1]]
+]
 
 def sumarMatrices(ma,mb):
+    limpiar()
     if len(ma) == len(mb) and len(ma[0]) == len(mb[0]):
         mr = []
         for i in range(len(ma)):
@@ -44,6 +31,7 @@ def sumarMatrices(ma,mb):
         print(f'Matriz 2: ({len(mb)},{len(mb[0])})')
 
 def multiplicarMatrices(ma,mb):
+    limpiar()
     if len(ma[0]) == len(mb):
         mr = []
         for i in range(len(ma)):
@@ -65,21 +53,17 @@ def multiplicarMatrices(ma,mb):
         print(f'Matriz 1: ({len(ma)},{len(ma[0])})')
         print(f'Matriz 2: ({len(mb)},{len(mb[0])})')
 
-def elegirMatriz():
+def elegirMatriz(text='Elige una matriz: '):
     inc = True
     while inc:
         limpiar()
-        print('Matriz 1:')
-        imprimirMatriz(matrizA)
-        print('Matriz 2:')
-        imprimirMatriz(matrizB)
-        print('Matriz 3:')
-        imprimirMatriz(matrizC)
-        print('Matriz 4:')
-        imprimirMatriz(matrizD)
-        opc = input('Elige una matriz para sacar su inversa: ')
+        for i in range(len(mat_de_mat)):
+            print(f'Matriz {i+1}:')
+            imprimirMatriz(mat_de_mat[i])
+            print()
+        opc = input(text)
         opc = convertir(opc)
-        if opc > 0 and opc < 4:
+        if opc > 0 and opc < len(mat_de_mat)+1:
             inc = False
             return opc
         else:
@@ -87,35 +71,12 @@ def elegirMatriz():
             pausar()
 
 def editarMatriz():
-    global matrizA
-    global matrizB
-    global matrizC
-    global matrizD
-    opc = elegirMatriz()
-    if opc==1:
-        matrizA = editar(len(matrizA),len(matrizA[0]))
-        limpiar()
-        print('La matriz quedo asi: ')
-        imprimirMatriz(matrizA)
-        pausar()
-    elif opc==2:
-        matrizB = editar(len(matrizB),len(matrizB[0]))
-        limpiar()
-        print('La matriz quedo asi: ')
-        imprimirMatriz(matrizB)
-        pausar()
-    elif opc==3:
-        matrizC = editar(len(matrizC),len(matrizC[0]))
-        limpiar()
-        print('La matriz quedo asi: ')
-        imprimirMatriz(matrizC)
-        pausar()
-    elif opc==4:
-        matrizD = editar(len(matrizD),len(matrizD[0]))
-        limpiar()
-        print('La matriz quedo asi: ')
-        imprimirMatriz(matrizD)
-        pausar()
+    global mat_de_mat
+    opc = elegirMatriz()-1
+    mat_de_mat[opc]=editar(len(mat_de_mat[opc]),len(mat_de_mat[opc][0]))
+    limpiar()
+    print('La matriz quedo asi: ')
+    imprimirMatriz(mat_de_mat[opc])
 
 def editar(filas, columnas, text=''):
     ma=[]
@@ -133,8 +94,8 @@ def editar(filas, columnas, text=''):
                     ma[i].append(numero)
                     inc = False
                 else:
-                    print('Numero no valido. Intenta nuevamente')
-                    pausar()
+                    ma[i].append(0)
+                    inc = False
     return ma
 
 def imprimirMatriz(mat):
@@ -172,7 +133,7 @@ def det4x4(mat):
         for j in range(3):
             if j==0: auxj+=1
             aux3[i][j] = mat[i+auxi][j+auxj]
-    primero = mat[0][0] * determinante(aux3)
+    primero = mat[0][0] * det3x3(aux3)
 
     auxi=0
     for i in range(3):
@@ -181,7 +142,7 @@ def det4x4(mat):
         for j in range(3):
             if j==0: auxj+=1
             aux3[i][j] = mat[i+auxi][j+auxj]
-    segundo = mat[1][0] * determinante(aux3)
+    segundo = mat[1][0] * det3x3(aux3)
 
     auxi=0
     for i in range(3):
@@ -190,7 +151,7 @@ def det4x4(mat):
         for j in range(3):
             if j==0: auxj+=1
             aux3[i][j] = mat[i+auxi][j+auxj]
-    tercero = mat[2][0] * determinante(aux3)
+    tercero = mat[2][0] * det3x3(aux3)
 
     auxi=0;
     for i in range(3):
@@ -199,7 +160,7 @@ def det4x4(mat):
         for j in range(3):
             if j==0: auxj+=1
             aux3[i][j] = mat[i+auxi][j+auxj]
-    cuarto = mat[3][0] * determinante(aux3)
+    cuarto = mat[3][0] * det3x3(aux3)
 
     determinante = primero-segundo+tercero-cuarto;
     return determinante;
@@ -221,11 +182,24 @@ def inversaCofactores(mat):
         pausar()
     elif len(mat) == 3:
         det = det3x3(mat)
-        aux = cofactores3x3(mat)
-        aux = transpuesta(aux)
-        aux = divisionDirecta(aux,det)
+        if det != 0:
+            aux = cofactores3x3(mat)
+            aux = transpuesta(aux)
+            aux = divisionDirecta(aux,det)
+        else:
+            print('La determinante de la matriz: ')
+            imprimirMatriz(mat)
+            print(f'Es {det}: No se puede sacar su Inversa')
     elif len(mat) == 4:
-        proceso()
+        det = det4x4(mat)
+        if det != 0:
+            aux = cofactores4x4(mat)
+            aux = transpuesta(aux)
+            aux = divisionDirecta(aux,det)
+        else:
+            print('La determinante de la matriz: ')
+            imprimirMatriz(mat)
+            print(f'Es {det}: No se puede sacar su Inversa')
 
 def cofactores3x3(mat):
     limpiar()
@@ -258,8 +232,6 @@ def cofactores3x3(mat):
             else:
                 print(f'mr[{i}][{j}] = mat[{a}][{b}]*mat[{c}][{d}] - mat[{c}][{b}]*mat[{a}][{d}]')
             aux[i][j] = (mat[a][b]*mat[c][d]) - (mat[c][b]*mat[a][d])
-            if j == 1:
-                pass
             if aux2%2 == 1:
                 aux[i][j] = -(aux[i][j])
             aux2 += 1
@@ -268,11 +240,61 @@ def cofactores3x3(mat):
     imprimirMatriz(aux)
     return aux
 
+def cofactores4x4(mat):
+    limpiar()
+    print('Matriz original')
+    imprimirMatriz(mat)
+    print()
+    aux4 = []
+    aux3 = []
+    cont = 0
+    for i in range(3):
+        aux3.append([1,1,1])
+    for i in range(4):
+        aux4.append([])
+        res=0
+        for j in range(4):
+            k1=-1
+            for k in range(3):
+                k1=(k1+1)%4
+                l1 = -1
+                for l in range(3):
+                    l1 = (l1+1)%4
+                    if k1 == i:
+                        k1 = (k1+1)%4
+                    if l1 == j:
+                        l1 = (l1+1)%4
+                    aux3[k][l]=mat[k1][l1]
+            if cont%2 == 1:
+                print(f'mr[{i}][{j}] = -(determinate de la matriz: )')
+                imprimirMatriz(aux3)
+                print(f'mr[{i}][{j}] = -({det3x3(aux3)})')
+                print()
+            else:
+                print(f'mr[{i}][{j}] = (determinate de la matriz: )')
+                imprimirMatriz(aux3)
+                print(f'mr[{i}][{j}] = {det3x3(aux3)}')
+                print()
+            res = det3x3(aux3)
+            print(res)
+            if cont%2 == 1:
+                res = res * -1
+            print(f'{res}, {cont}')
+            aux4[i].append(res)
+            #cont += 1
+    print('Determinante de cofactores: ')
+    imprimirMatriz(aux4)
+    print()
+    return aux4
+
 def transpuesta(mat):
     n = len(mat)
     aux = []
     for i in range(n):
-        aux.append([1,1,1])
+        aux.append([])
+        for j in range(n):
+            aux[i].append(1)
+
     for i in range(n):
         for j in range(n):
             aux[j][i]=mat[i][j]
@@ -319,7 +341,7 @@ def elegirInversa():
     metodo =  0
     while inc:
         limpiar()
-        print(f'1.- Cofactores\n2-Gauss')
+        print(f'1.- Cofactores\n2.- Gauss')
         metodo = input('Elige el metodo: ')
         metodo = convertir(metodo)
         if metodo == 1:
@@ -329,72 +351,80 @@ def elegirInversa():
         else:
             print('Opcion no valida. Intenta nuevamente')
             pausar()
-    opc = elegirMatriz()
-    if opc == 1:
-        inc = False
-        if metodo == 1:
-            inversaCofactores(matrizA)
-        elif metodo == 2:
-            inversaGauss(matrizA)
-    elif opc == 2:
-        inc = Falseinc = False
-        if metodo == 1:
-            inversaCofactores(matrizB)
-        elif metodo == 2:
-            inversaGauss(matrizB)
-    elif opc == 3:
-        inc = False
-        if metodo == 1:
-            inversaCofactores(matrizC)
-        elif metodo == 2:
-            inversaGauss(matrizC)
-    elif opc == 4:
-        inc = False
-        if metodo == 1:
-            inversaCofactores(matrizC)
-        elif metodo == 2:
-            inversaGauss(matrizC)
-    else:
-        print('Opcion no valida. Intenta nuevamente')
-        pausar()
+    opc = elegirMatriz('Elige matriz para sacar su inversa: ')-1
+    if metodo == 1:
+        inversaCofactores(mat_de_mat[opc])
+    elif metodo == 2:
+        proceso()
+        #inversaGauss(mat_de_mat[opc])
+
+def agregarMatriz():
+    global mat_de_mat
+    filas, columnas = [0,0]
+    inc = True
+    while inc:
+        limpiar()
+        filas = input('Ingrese el numero de filas: ')
+        filas = convertir(filas)
+        if filas > 0:
+            inc = False
+        else:
+            print('Numero no valido. Intenta otra vez')
+            pausar()
+    inc = True
+    while inc:
+        limpiar()
+        columnas = input('Ingrese el numero de columnas: ')
+        columnas = convertir(columnas)
+        if columnas > 0:
+            inc = False
+        else:
+            print('Numero no valido. Intenta otra vez')
+            pausar()
+    limpiar()
+    aux = editar(filas,columnas)
+    mat_de_mat.append(aux)
+    limpiar()
+    print('Matriz: ')
+    imprimirMatriz(aux)
+    print('Agregada correctamente')
 
 def menu():
-    incorrecto = True
-    while incorrecto:
+    menu = True
+    while menu:
         limpiar()
         opc = input("""1.- Sumar matrices
 2.- Multiplicar matrices
 3.- Inversa
 4.- Operaciones libres
-5.- Editar MAtrices
+5.- Editar Matrices
+6.- Agregar Matriz
+7.- Regresar al menu anterior
 Elige una opcion: """)
         opc = convertir(opc)
         if opc == 1:
-            incorrecto = False
-            opc = eleccion()
-            if opc == 1:
-                sumarMatrices(matrizA,matrizB)
-            elif opc == 2:
-                sumarMatrices(matrizC,matrizD)
+            m1,m2=[0,0]
+            m1 = elegirMatriz('Elige la primer matriz: ')-1
+            m2 = elegirMatriz('Elige la segunda matriz: ')-1
+            sumarMatrices(mat_de_mat[m1],mat_de_mat[m2])
         elif opc == 2:
-            incorrecto = False
-            opc = eleccion()
-            if opc == 1:
-                multiplicarMatrices(matrizA,matrizB)
-            elif opc == 2:
-                multiplicarMatrices(matrizC,matrizD)
+            m1,m2=[0,0]
+            m1 = elegirMatriz('Elige la primer matriz: ')-1
+            m2 = elegirMatriz('Elige la segunda matriz: ')-1
+            multiplicarMatrices(mat_de_mat[m1],mat_de_mat[m2])
         elif opc == 3:
-            incorrecto = False
             elegirInversa()
         elif opc == 4:
-            incorrecto = False
             proceso()
         elif opc == 5:
             editarMatriz()
+        elif opc == 6:
+            agregarMatriz()
+        elif opc==7:
+            menu = False
         else:
             print('Opcion no valida. Intenta nuevamente')
-            pausar()
+        pausar()
 
 def main():
     menu()
-    pausar()

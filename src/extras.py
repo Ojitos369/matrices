@@ -12,5 +12,8 @@ def convertir(num):
     try:
         num = int(num)
     except:
-        num = False
+        if num == '0' or num == 0:
+            num = 0
+        else:
+            num = False
     return num
