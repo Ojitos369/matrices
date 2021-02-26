@@ -219,12 +219,19 @@ def inversaCofactores(mat):
     if len(mat) != len(mat[0]):
         print('No se puede sacar matriz inversa')
         pausar()
-    else:
-        print(f'La determinante es: {determinante(mat)}')
+    elif len(mat) == 3:
+        det = det3x3(mat)
+        aux = cofactores3x3(mat)
+        aux = transpuesta(aux)
+        aux = divisionDirecta(aux,det)
+    elif len(mat) == 4:
         proceso()
 
 def cofactores3x3(mat):
     limpiar()
+    print('Matriz Original:')
+    imprimirMatriz(mat)
+    print()
     aux = []
     aux2 = 0
     for i in range(3):
@@ -246,19 +253,58 @@ def cofactores3x3(mat):
                 c = (c+1)%3
             if d == j:
                 d = (d+1)%3
-            print(f'r[{i}][{j}] = mat[{a}][{b}]*mat[{c}][{d}] - mat[{c}][{b}]*mat[{a}][{d}]')
+            if aux2%2 == 1:
+                print(f'mr[{i}][{j}] = -(mat[{a}][{b}]*mat[{c}][{d}] - mat[{c}][{b}]*mat[{a}][{d}])')
+            else:
+                print(f'mr[{i}][{j}] = mat[{a}][{b}]*mat[{c}][{d}] - mat[{c}][{b}]*mat[{a}][{d}]')
             aux[i][j] = (mat[a][b]*mat[c][d]) - (mat[c][b]*mat[a][d])
             if j == 1:
                 pass
             if aux2%2 == 1:
                 aux[i][j] = -(aux[i][j])
             aux2 += 1
-    print('\n')
-    print('Matriz:')
-    imprimirMatriz(mat)
-    print('Cofactores:')
+    print()
+    print('Matriz de Cofactores:')
     imprimirMatriz(aux)
-    pausar()
+    return aux
+
+def transpuesta(mat):
+    n = len(mat)
+    aux = []
+    for i in range(n):
+        aux.append([1,1,1])
+    for i in range(n):
+        for j in range(n):
+            aux[j][i]=mat[i][j]
+    print()
+    print('Matriz de Cofactores Transpuesta: ')
+    imprimirMatriz(aux)
+    return aux
+
+def mcd(dividendo,divisor):
+    if divisor==0:
+        return dividendo
+    else:
+        return mcd(divisor, dividendo%divisor)
+
+def divisionDirecta(mat,det):
+    print()
+    print('Matriz Inversa: ')
+    n = len(mat)
+    for i in range(n):
+        for j in range(n):
+            print(f'{mat[i][j]}/{det}', end='\t')
+            if j+1 == n:
+                print()
+    print()
+    print('Matriz Inversa Final: ')
+    for i in range(n):
+        for j in range(n):
+            mcdiv = mcd(mat[i][j], det)
+            print(f'{int(mat[i][j]/mcdiv)}/{int(det/mcdiv)}', end='\t')
+            if j+1 == n:
+                print()
+    print()
 
 def inversaGauss(mat):
     limpiar()
@@ -321,9 +367,6 @@ def menu():
 3.- Inversa
 4.- Operaciones libres
 5.- Editar MAtrices
-6.- Transpuesta
-7.- Determinante
-8.- Inversa
 Elige una opcion: """)
         opc = convertir(opc)
         if opc == 1:
@@ -348,14 +391,6 @@ Elige una opcion: """)
             proceso()
         elif opc == 5:
             editarMatriz()
-        elif opc == 6:
-            incorrecto = False
-            cofactores3x3(matrizA)
-        elif opc == 7:
-            incorrecto = False
-            limpiar()
-            print(det3x3(matrizA))
-            pausar()
         else:
             print('Opcion no valida. Intenta nuevamente')
             pausar()
